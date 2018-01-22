@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(!isset($_SESSION['email'])){
+    header("location:index.php");
+}
+print_r($_SESSION);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,8 +49,11 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">								
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="#" style="color: #000">Regulamento</a></li>					
-				<li class="sem_ponto"><a href="#">Utilizador</a></li>
+				<li><a href="#" style="color: #000">Regulamento</a></li>
+				<li class="sem_ponto"><a style="color:green;" href="#"><i class="fa fa-user" style="color: green;" aria-hidden="true"></i>
+                <?php echo $_SESSION['nome']?></a></li>
+        <li class="sem_ponto"><a style="color:green;" href="logout.php">Logout</a></li>
+
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</div><!-- /.container-->
@@ -369,7 +379,7 @@
 			// Initialize the tour
 			tour.init();
 			// Start the tour
-			tour.start();
+			// tour.start();
 
 		</script>
 

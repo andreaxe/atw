@@ -1,7 +1,20 @@
+<?php
+// Initialize the session
+session_start();
+
+// If session variable is not set it will redirect to login page
+print_r($_SESSION);
+if(isset($_SESSION['email'])){
+    header("location: provas.php");
+    exit;
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" >
+
 	<title>ATW teste</title>
 	<meta name="description" content="The HTML5 Herald">
 	<meta name="author" content="SitePoint">
@@ -43,7 +56,7 @@
 				<li><a href="#" style="color: #000">Regulamento</a></li>					
 				<li>
 					<p class="navbar-btn">
-						<a href="backend.html" class="btn btn-default" style="margin-right: 10px;">Backend</a>
+						<a href="backend.php" class="btn btn-default" style="margin-right: 10px;">Backend</a>
 					</p>
 				</li>
 				<li>
@@ -115,33 +128,33 @@
 					<h3 class="panel-title">Junte-se no nosso <strong>clube</strong></h3>
 				</div>
 				<div class="panel-body">
-					<form role="form">
+					<form role="form" action="register.php" method="POST">
 						<div class="row">
 							<div class="col-xs-6 col-sm-6 col-md-6">
 								<div class="form-group">
-								<input type="text" name="first_name" id="first_name" class="form-control input-sm" placeholder="Primeiro nome">
+								<input type="text" name="username" id="first_name" class="form-control input-sm" placeholder="Primeiro nome" required>
 								</div>
 							</div>
 							<div class="col-xs-6 col-sm-6 col-md-6">
 								<div class="form-group">
-									<input type="text" name="last_name" id="last_name" class="form-control input-sm" placeholder="Último nome">
+									<input type="number" name="nif" id="last_name" class="form-control input-sm" placeholder="nif" required>
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<input type="email" name="email" id="email" class="form-control input-sm" placeholder="Email">
+							<input type="email" name="email" id="email" class="form-control input-sm" placeholder="Email" required>
 						</div>
 
 						<div class="row">
 							<div class="col-xs-6 col-sm-6 col-md-6">
 								<div class="form-group">
-									<input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password">
+									<input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required>
 								</div>
 							</div>
 							<div class="col-xs-6 col-sm-6 col-md-6">
 								<div class="form-group">
-									<input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-sm" placeholder="Repetir Password">
+									<input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-sm" placeholder="Repetir Password" required>
 								</div>
 							</div>
 						</div>
@@ -213,15 +226,15 @@
 				<div class="row">
 					<div class="col-xs-12">                  
 						
-						<form id="loginForm" method="POST" action="/login/" novalidate="novalidate">
+						<form id="loginForm" method="POST" action="login.php">
 							<div class="form-group">
-								<label for="username" class="control-label">Email</label>
-								<input type="text" class="form-control" id="username" name="username" value="" required="" title="Introduza o seu email" placeholder="example@gmail.com">
+								<label for="email" class="control-label">Email</label>
+								<input type="email" class="form-control" id="email" name="email" title="Introduza o seu email" placeholder="example@gmail.com" required>
 								<span class="help-block"></span>
 							</div>
 							<div class="form-group">
 								<label for="password" class="control-label">Password</label>
-								<input type="password" class="form-control" id="password" name="password" value="" required="" title="Introduza a sua password">
+								<input type="password" class="form-control" id="password" name="password" title="Introduza a sua password" required>
 								<span class="help-block"></span>
 							</div>
 							<div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
@@ -233,7 +246,7 @@
 							</div>
 							
 							<hr>
-							<button type="button" class="btn btn-success btn-block" onclick="location.href = 'provas.html'">Login</button>							
+							<button type="submit" class="btn btn-success btn-block">Login</button>
 						</form>
 					</div>
 					
@@ -282,7 +295,7 @@
 			// Initialize the tour
 			tour.init();
 			// Start the tour
-			tour.start();
+			// tour.start();
 
 		</script>
 	</body>
