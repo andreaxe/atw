@@ -12,7 +12,7 @@
       <small><a href="#">Adicionar prova</a></small>
     </li>
     <li class="sem-ponto">
-      <small><a href="#">Consultar provas</a></small>
+      <small><a href="consultar_prova.php">Consultar provas</a></small>
     </li>
     <!--<li class="sem-ponto"><hr></li>-->
     <li class="sem-ponto"><h5>Definições</h5></li>
