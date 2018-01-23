@@ -2,10 +2,10 @@
   <ul class="menu-backoffice">
     <li class="sem-ponto"><h5>Utilizadores</h5></li>
     <li class="sem-ponto">
-      <small><a href="#">Adicionar utilizador</a></small>
+      <small><a href="inserir_utilizador.php">Adicionar utilizador</a></small>
     </li>
     <li class="sem-ponto">
-      <small><a href="#">Consultar utilizadores</a></small>
+      <small><a href="consultar_utilizador.php">Consultar utilizadores</a></small>
     </li>
     <li class="sem-ponto"><h5>Provas</h5></li>
     <li class="sem-ponto">

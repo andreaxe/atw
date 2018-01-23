@@ -22,8 +22,13 @@
             <input type="text" name="coordenadas" class="form-control" id="coordenadas">
         </div>
         <div class="form-group">
-            <label for="categoria">Categoria</label>
-            <input type="text" name="categoria" class="form-control" id="categoria">
+          <label for="sel1">Categoria</label>
+          <select class="form-control" id="sel1">
+            <option>Maratona</option>
+            <option>Trial</option>
+            <option>Resistência</option>
+            <option>4</option>
+          </select>
         </div>
         <div class="form-group">
             <label for="data">Data</label>
