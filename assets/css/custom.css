@@ -82,7 +82,7 @@ body{
     margin-top: 20px;
 }
 
-.no-margin-bottom: {
+.no-margin-bottom {
   margin-bottom: 0px !important;
 }
 
@@ -93,6 +93,7 @@ body{
   color:#8BB753;
 }
 
-.no-margin-bottom: {
+.no-margin-bottom {
   margin-bottom: 0px !important;
 }
+body { padding-bottom: 70px; }

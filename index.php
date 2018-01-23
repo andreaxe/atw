@@ -3,7 +3,7 @@
 session_start();
 
 // If session variable is not set it will redirect to login page
-print_r($_SESSION);
+
 if(isset($_SESSION['email'])){
     header("location: provas.php");
     exit;
@@ -202,13 +202,15 @@ if(isset($_SESSION['email'])){
 		</div>
 	</div>-->
 </div>
-<div class="container-fluid" style="background-color: #F8F8F8; padding: 10px; border-top: 1px solid #ebebeb; margin-top:25px;">
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-6" style="background-color: #F8F8F8"><small>Trabalho de ATW - 1º momento de avaliação</small></div>
-			<div class="col-sm-6" style="text-align:right;"><small>André Garcia - EI072135</small></div>
-		</div>
-	</div>
+<div class="navbar navbar-fixed-bottom">
+    <div class="container-fluid" style="background-color: #F8F8F8; padding: 10px; border-top: 1px solid #ebebeb; margin-top:25px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6" style="background-color: #F8F8F8"><small>Trabalho de ATW - 1º momento de avaliação</small></div>
+                <div class="col-sm-6" style="text-align:right;"><small>André Garcia - EI072135</small></div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Button trigger modal -->
 

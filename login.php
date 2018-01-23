@@ -16,8 +16,8 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     checkLogin($data, $connection, $admin);
 }
 
-function checkLogin($data, $connection, $admin = false){
-
+function checkLogin($data, $connection, $admin = false)
+{
     $password = sha1($data['password']);
     $query = "SELECT * FROM utilizador WHERE email = '".$data['email']."' AND senha ='".$password."'";
     $result = mysqli_query($connection, $query);

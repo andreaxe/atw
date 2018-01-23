@@ -9,7 +9,7 @@
     </li>
     <li class="sem-ponto"><h5>Provas</h5></li>
     <li class="sem-ponto">
-      <small><a href="#">Adicionar prova</a></small>
+      <small><a href="inserir_prova.php">Adicionar prova</a></small>
     </li>
     <li class="sem-ponto">
       <small><a href="consultar_prova.php">Consultar provas</a></small>

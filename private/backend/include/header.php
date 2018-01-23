@@ -39,7 +39,7 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="sem_ponto"><a href="#">Utilizador</a></li>
+					<li class="sem_ponto"><a href="#">Admin</a></li>
 					<!--<li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Opcoes <b class="caret"></b></a>
                         <ul class="dropdown-menu">
