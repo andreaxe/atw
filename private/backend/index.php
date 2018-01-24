@@ -1,3 +1,7 @@
+<?php
+$new_user = isset($_GET['novo_utilizador']) ? true : false;
+?>
+
 <?php include('include/header.php'); ?>
     <div class="container">
     	<div class="row">
@@ -5,6 +9,11 @@
                 <?php include('include/sidebar.php')?>
     		</div>
     		<div class="col-sm-9">
+          <?php if($new_user):?>
+            <div class="alert alert-success" style="margin-top: 20px;">
+              Novo utilizador criado com sucesso!
+            </div>
+          <?php endif; ?>
 
     		</div>
     		<!--<div class="col-md-2 offset-md-4"><h2 style="color: #ABABAB;"><img class="img-responsive" src="assets/img/Logo-Maratona.png"></h2></div>-->

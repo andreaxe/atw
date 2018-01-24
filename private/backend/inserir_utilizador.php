@@ -27,8 +27,7 @@ if(isset($_POST['submitButton'])){ //check if form was submitted
     $data['tempos'] = $_POST['tempos'];
     $data['tamanho'] = $_POST['tamanho'];
 
-    //createUser($data, $connection);
-    print_r($_POST);
+    createUser($data, $connection);
 }
 
 function createUser($data, $connection)
@@ -55,24 +54,20 @@ function createUser($data, $connection)
  '$tempos', '$tamanho', '$activo', '$federado')";
 
     $user  = mysqli_query($connection , $query);
+    mysqli_close($connection);
 
     if($user)
     {
         # tratar do acesso à internet no container
         //enviarEmail($email, $nome, $senha);
 
-        echo "<div class=\"alert alert-success\">";
-        echo("Utilizador inserido com sucesso!");
-        echo "</div>";
-        header("location:index.php");
-        die();
+        header("location:index.php?novo_utilizador=true");
     }
     else
     {
         echo("Houve um erro ao introduzir o utilizador!");
         print_r(mysqli_error_list($connection));
     }
-    mysqli_close($connection);
 }
 
 function gerarPassword(){
@@ -124,6 +119,14 @@ include('include/header.php'); ?>
                 <input type="text" name="nome" id="first_name" class="form-control input-sm" placeholder="Nome" required>
                 </div>
             </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <select class="form-control" name="genero" id="genero">
+                      <option value="Masculino">Masculino</option>
+                      <option value="Feminino">Feminino</option>
+                    </select>
+                </div>
+          </div>
             <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="form-group">
                     <input type="text" name="nif" id="nif" class="form-control input-sm" placeholder="NIF" required>
@@ -137,9 +140,12 @@ include('include/header.php'); ?>
                 <input type="text" name="cc" id="cc" class="form-control input-sm" placeholder="CC" required>
                 </div>
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="col-xs-3 col-sm-3 col-md-2">
+            <small>Data de Nascimento:</small>
+        </div>
+            <div class="col-xs-12 col-sm-5 col-md-4">
                 <div class="form-group">
-                    <input type="text" name="datan" id="nif" class="form-control input-sm" placeholder="Data de nascimento" required>
+                    <input type="date" name="datan" id="datan" class="form-control input-sm" placeholder="Data de nascimento" required>
                 </div>
             </div>
         </div>
@@ -149,7 +155,7 @@ include('include/header.php'); ?>
         </div>
 
         <div class="form-group">
-            <input type="text" name="morada" id="email" class="form-control input-sm" placeholder="Morada" required>
+            <input type="text" name="morada" id="morada" class="form-control input-sm" placeholder="Morada" required>
         </div>
 
         <div class="row">
@@ -358,19 +364,13 @@ include('include/header.php'); ?>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required>
-                </div>
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="form-group">
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-sm" placeholder="Repetir Password" required>
-                </div>
-            </div>
+      <div class="form-group">
+            <input type="text" name="tamanho" id="tamanho" class="form-control input-sm" placeholder="Tamanho">
         </div>
+      <div class="form-group">
+            <input type="text" name="tempos" id="tempos" class="form-control input-sm" placeholder="Tempos">
+        </div>
+
 						<div class="form-group">
 
 							<label class="form-check-label">
@@ -379,6 +379,7 @@ include('include/header.php'); ?>
 							</label>
 
 						</div>
+      <hr>
 						<button type="submit" class="btn btn-default" name="submitButton">Submit</button>
 
 					</form>

@@ -21,8 +21,9 @@ $result = mysqli_query($connection, $query);
     						<th>NIF</th>
     						<th>CC</th>
     						<th>Nascimento</th>
-                            <th>email</th>
-                            <th></th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th></th>
     					</tr>
     				</thead>
     				<tfoot>
@@ -31,8 +32,9 @@ $result = mysqli_query($connection, $query);
     						<th>NIF</th>
     						<th>CC</th>
     						<th>Nascimento</th>
-                            <th>email</th>
-                            <th></th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th></th>
     					</tr>
     				</tfoot>
     				<tbody>
@@ -42,8 +44,9 @@ $result = mysqli_query($connection, $query);
     						<td><?php echo $row['nif']; ?></td>
     						<td><?= $row['cc']; ?></td>
     						<td><?= $row['datan']; ?></td>
-                            <td><?= $row['email']; ?></td>
-                            <td><input type="checkbox" value="<?= $row['uid'];?>" name="utilizadores[]"></td>
+                <td><?= $row['email']; ?></td>
+                <td><?= $row['telef']; ?></td>
+                <td><input type="checkbox" value="<?= $row['uid'];?>" name="utilizadores[]"></td>
     					</tr>
                     <?php } ?>
                     </tbody>
