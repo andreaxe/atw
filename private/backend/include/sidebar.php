@@ -7,6 +7,13 @@
     <li class="sem-ponto">
       <small><a href="consultar_utilizador.php">Consultar utilizadores</a></small>
     </li>
+    <li class="sem-ponto"><h5>Eventos</h5></li>
+    <li class="sem-ponto">
+      <small><a href="inserir_evento.php">Adicionar evento</a></small>
+    </li>
+    <li class="sem-ponto">
+      <small><a href="consultar_evento.php">Consultar evento</a></small>
+    </li>
     <li class="sem-ponto"><h5>Provas</h5></li>
     <li class="sem-ponto">
       <small><a href="inserir_prova.php">Adicionar prova</a></small>

@@ -2,7 +2,7 @@
 include('../../ConnectDB.php');
 
 $connection = ConnectDB::getInstance()->getConnection();
-$query = "SELECT * FROM utilizador";
+$query = "SELECT * FROM evento";
 $result = mysqli_query($connection, $query);
 
 ?>
@@ -13,47 +13,44 @@ $result = mysqli_query($connection, $query);
                 <?php include('include/sidebar.php')?>
     		</div>
     		<div class="col-sm-9">
-                <h2 class="titulo" style="margin-top: 20px;">Consultar utilizador</h2>
+                <h2 class="titulo" style="margin-top: 20px;">Consultar evento</h2>
                 <table id="example" class="table table-bordered" cellspacing="0" width="100%">
     				<thead>
     					<tr>
-    						<th>Nome</th>
-    						<th>NIF</th>
-    						<th>CC</th>
-    						<th>Nascimento</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Activo</th>
-                <th></th>
+    						<th>Designação</th>
+    						<th>Local</th>
+    						<th>Coordenadas</th>
+    						<th>Categoria</th>
+                            <th>Data</th>
+                            <th>Activo</th>
+                            <th></th>
     					</tr>
     				</thead>
     				<tfoot>
     					<tr>
-    						<th>Nome</th>
-    						<th>NIF</th>
-    						<th>CC</th>
-    						<th>Nascimento</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Activo</th>
-                <th></th>
+    						<th>Designação</th>
+    						<th>Local</th>
+    						<th>Coordenadas</th>
+    						<th>Categoria</th>
+                            <th>Data</th>
+                            <th>Activo</th>
+                            <th></th>
     					</tr>
     				</tfoot>
     				<tbody>
                     <?php while ($row = $result->fetch_array()) { ?>
     					<tr>
-    						<td><a href="#"><?= $row["nome"]; ?></a></td>
-    						<td><?php echo $row['nif']; ?></td>
-    						<td><?= $row['cc']; ?></td>
-    						<td><?= $row['datan']; ?></td>
-                <td><?= $row['email']; ?></td>
-                <td><?= $row['telef']; ?></td>
+    						<td><a href="#"><?= $row["designacao"]; ?></a></td>
+    						<td><?php echo $row['local']; ?></td>
+    						<td><?= $row['coordenadas']; ?></td>
+    						<td><?= $row['categoria']; ?></td>
+                <td><?= $row['dataevento']; ?></td>
                 <?php if($row['ativo'] == 1){ ?>
                   <td><i class="fa fa-check" aria-hidden="true"></i></td>
                 <?php } else { ?>
                   <td><i class="fa fa-times" aria-hidden="true"></i></td>
                 <?php } ?>
-                <td><input type="checkbox" value="<?= $row['idu'];?>" name="utilizadores[]"></td>
+                <td><input type="checkbox" value="<?= $row['ide'];?>" name="utilizadores[]"></td>
     					</tr>
                     <?php } ?>
                     </tbody>

@@ -9,8 +9,8 @@ error_reporting(E_ALL);
 
 if(isset($_POST['submitButton'])){ //check if form was submitted
 
-    $connection = ConnectDB::getInstance()->getConnection();
 
+    $connection = ConnectDB::getInstance()->getConnection();
     $data['nome'] = $_POST['nome'];
     $data['nif'] = $_POST['nif'];
     $data['cc'] = isset($_POST['cc']) ? $_POST['cc'] : null;
@@ -20,23 +20,29 @@ if(isset($_POST['submitButton'])){ //check if form was submitted
     $data['morada'] = $_POST['morada'];
     $data['nacionalidade'] = isset($_POST['nacionalidade']) ? $_POST['nacionalidade'] : null ;
     $data['genero'] = $_POST['genero'];
-    $data['activo'] = 0;
-        //isset($_POST['activo']) ? $_POST['activo'] : null;
-    $data['federado'] = 0;
-        //isset($_POST['federado']) ? $_POST['federado'] : null;
+    $data['activo'] = isset($_POST['activo']) ? 1 : 0;
+    $data['federado'] = isset($_POST['federado']) ? 1 : 0;
     $data['tempos'] = $_POST['tempos'];
     $data['tamanho'] = $_POST['tamanho'];
 
-    createUser($data, $connection);
+    criarUtilizador($data, $connection);
 }
 
-function createUser($data, $connection)
+function criarUtilizador($data, $connection)
 {
+
+    $email   = mysqli_real_escape_string($connection, $data['email']);
+
+    if(emailExiste($email, $connection)){
+        header("location:index.php?novo_utilizador=false&mensagem=existe");
+        exit();
+    }
+
     $nome    = mysqli_real_escape_string($connection, $data['nome']);
     $nif     = mysqli_real_escape_string($connection, $data['nif']);
     $cc      = mysqli_real_escape_string($connection, $data['cc']);
     $datan   = mysqli_real_escape_string($connection, $data['cc']);$data['datan'];
-    $email   = mysqli_real_escape_string($connection, $data['email']);
+
     $telef   = mysqli_real_escape_string($connection, $data['telef']);
     $morada  = mysqli_real_escape_string($connection, $data['morada']);
     $nacao   = mysqli_real_escape_string($connection, $data['nacionalidade']);
@@ -49,9 +55,11 @@ function createUser($data, $connection)
     $senha = gerarPassword();
     $pass_cifrada = sha1($senha);
 
+
     $query = "INSERT INTO utilizador(nome, nif, cc, datan, email, telef, senha, morada, nacionalidade, genero, tempos,
  tamanho, ativo, federado)VALUES('$nome', '$nif', '$cc', '$datan', '$email', '$telef', '$pass_cifrada','$morada','$nacao', '$genero', 
  '$tempos', '$tamanho', '$activo', '$federado')";
+
 
     $user  = mysqli_query($connection , $query);
     mysqli_close($connection);
@@ -68,6 +76,16 @@ function createUser($data, $connection)
         echo("Houve um erro ao introduzir o utilizador!");
         print_r(mysqli_error_list($connection));
     }
+}
+
+function emailExiste($email, $connection){
+
+    $query = "SELECT * FROM utilizador WHERE email = '".$email."'";
+    $result = mysqli_query($connection, $query);
+    if(mysqli_num_rows($result) > 0)
+      return true;
+
+    return false;
 }
 
 function gerarPassword(){
@@ -372,10 +390,13 @@ include('include/header.php'); ?>
         </div>
 
 						<div class="form-group">
-
-							<label class="form-check-label">
-								<input class="form-check-input" type="checkbox" value="">
-								<small>Desejo incluir o meu email na newsletter do clube</small>
+              <label class="form-check-label">
+								<input class="form-check-input" type="checkbox" name="activo" checked>
+								<small>Activo</small>
+							</label>
+              <label class="form-check-label">
+								<input class="form-check-input" name="federado" type="checkbox">
+								<small>Federado</small>
 							</label>
 
 						</div>
