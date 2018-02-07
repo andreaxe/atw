@@ -297,7 +297,7 @@ if(isset($_SESSION['email'])){
 			// Initialize the tour
 			tour.init();
 			// Start the tour
-			// tour.start();
+			tour.start();
 
 		</script>
 	</body>
