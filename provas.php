@@ -4,16 +4,75 @@ session_start();
 if (!isset($_SESSION['email'])) {
     header("location:index.php");
 }
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-$connection = ConnectDB::getInstance()->getConnection();
-$query      = "SELECT * FROM prova INNER JOIN evento ON evento.ide = prova.idevento";
-$results    = mysqli_query($connection, $query);
-$query_inscricoes      = "SELECT * FROM inscricoes INNER JOIN prova on prova.idp = inscricoes.idprova INNER JOIN evento on 
-               evento.ide = prova.idevento where idutilizador = ".$_SESSION['idu'];
-$inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
+$connection       = ConnectDB::getInstance()->getConnection();
 
+function verificar_prova_inscricao($prova, $user, $connection)
+{
+/*
+ * O utilizador apenas pode inscrever-se numa única prova de um dado evento.
+ */
+    $query = "SELECT * from inscricoes INNER JOIN prova on prova.idp = inscricoes.idprova where idutilizador=".$user." ";
+    $eventos = mysqli_query($connection, $query)->fetch_all();
+
+    if(empty($eventos)){
+      return true;
+    }
+
+    $evento = mysqli_query($connection, "SELECT idevento FROM prova where prova.idp =".$prova)->fetch_row();
+    foreach($eventos as $value){
+      if($evento[0] == $value[7]){
+        return false;
+      }
+    }
+
+    return true;
+}
+$query            = "SELECT * FROM prova INNER JOIN evento ON evento.ide = prova.idevento";
+$results          = mysqli_query($connection, $query);
+$query_inscricoes = "SELECT * FROM inscricoes INNER JOIN prova on prova.idp = inscricoes.idprova INNER JOIN evento on 
+               evento.ide = prova.idevento where idutilizador = ".$_SESSION['idu'];
+$inscricoes       = mysqli_query($connection, $query_inscricoes)->fetch_all();
+
+if(isset($_POST['remover_prova'])){
+  $id_utilizador = $_SESSION['idu'];
+  $id_prova = htmlentities($_POST['remover_prova'], ENT_COMPAT, 'UTF-8');
+  $query = "DELETE FROM inscricoes WHERE idutilizador = ".$id_utilizador." and idprova = ".$id_prova.";";
+  return mysqli_query($connection, $query);
+
+}
+if(isset($_POST['prova'])){
+
+    $id_utilizador = $_SESSION['idu'];
+    $prova = htmlentities($_POST['prova'], ENT_COMPAT, 'UTF-8');
+    $data = date('Y-m-d');
+    // Não percebo muito bem este campo na tabela de inscrições...
+    $limite =date('Y-m-d');
+
+    if(verificar_prova_inscricao($prova, $id_utilizador, $connection)){
+      header("Content-Type: text/json; charset=utf8");
+      $query = "INSERT INTO inscricoes(idutilizador, idprova, datainsc, datalimite)VALUES('$id_utilizador', '$prova', 
+      '$data', '$limite')";
+
+      $inscricao = mysqli_query($connection , $query);
+
+      if($inscricao)
+      {
+        echo json_encode(array("success" => true));
+        exit();
+      }
+      else
+      {
+        echo json_encode(array("success" => false, "errors" => "O utilizador já se encontra inscrito numa prova do mesmo evento"));
+        exit();
+      }
+    }
+    echo json_encode(array("success" => false, "errors" => "O utilizador já se encontra inscrito numa prova do mesmo evento"));
+}
+mysqli_close($connection);
 ?>
 <!doctype html>
 <html lang="en">
@@ -44,11 +103,11 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
 
   <style>
-       #map {
-        height: 400px;
-        width: 100%;
-       }
-    </style>
+    #map {
+      height : 400px;
+      width  : 100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -67,9 +126,16 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" style="color: #000">Terminar sessão</a></li>
-        <li class="sem_ponto"><a href="#"><?php echo $_SESSION['nome'] ?>
-            <i class="fa fa-caret-down" aria-hidden="true"></i></a></li>
+        <li class="dropdown open">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"><?php echo $_SESSION['nome'] ?>
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="definicoes.php">Definições</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="logout.php">Terminar sessão</a></li>
+              </ul>
+            </li>
 
       </ul>
     </div><!-- /.navbar-collapse -->
@@ -104,7 +170,8 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
             <td><?= $row[2] ?></td>
             <td><?= $row[7] ?></td>
             <td>
-              <button id="inscrever" type="button" class="btn btn-default btn-xs">clique aqui</button>
+              <button id="inscrever_prova" type="submit" value="<?= $row[0]; ?>" class="btn btn-default btn-xs
+              inscrever_prova">clique aqui</button>
             </td>
           </tr>
         <?php } ?>
@@ -112,7 +179,7 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
       </table>
     </div>
     <div class="col-sm-3">
-      <h3>Teste</h3>
+      <h3 class="titulo">Localizações</h3>
       <div id="map"></div>
     </div>
   </div>
@@ -121,7 +188,23 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
     <div class="col-sm-12">
       <h3 class="titulo">Lista de Provas onde me encontro inscrito</h3>
         <?php if (empty($inscricoes)){ ?>
-          <p>Não se encontra inscrito em nenhuma prova!</p>
+            <table id="inscrito" class="hide table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Prova</th>
+          <th>Categoria</th>
+          <th>Localidade</th>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Coordenadas</th>
+          <th>Inscrição</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+            </table>
+          <u id="zero_inscritos">Não se encontra inscrito em nenhuma prova!</u>
         <?php } else
         { ?>
       <table id="inscrito" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -134,13 +217,13 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
           <th>Data</th>
           <th>Hora</th>
           <th>Coordenadas</th>
-          <th>Remover inscrição</th>
+          <th>Inscrição</th>
         </tr>
         </thead>
         <tbody>
 
         <?php
-        foreach($inscricoes as $row) { ?>
+        foreach ($inscricoes as $row) { ?>
           <tr>
             <td><a href="#"><?= $row[5] ?></a></td>
             <td><a href="#"><?= $row[1] ?></a></td>
@@ -150,7 +233,8 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
             <td><?= $row[2] ?></td>
             <td><?= $row[7] ?></td>
             <td>
-              <button id="inscrever" type="button" class="btn btn-default btn-xs">clique aqui</button>
+              <button id="inscrever" type="button" value="<?= $row[1]; ?>" class="btn btn-danger btn-xs remover_prova">
+                Remover inscrição</button>
             </td>
           </tr>
         <?php } ?>
@@ -233,31 +317,84 @@ $inscricoes = mysqli_query($connection, $query_inscricoes)->fetch_all();
 
 </script>
 
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-
 <script type="text/javascript">
-   $(document).ready(function() {
-      $('#prova').DataTable();
-  } );
+  $(document).ready(function () {
+    $('#prova').DataTable();
+    $('#inscrito').DataTable();
+
+  });
 
 </script>
 <script>
- function initMap() {
-        var uluru = {lat: -25.363, lng: 131.044};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: uluru
-        });
-        var marker = new google.maps.Marker({
-          position: uluru,
-          map: map
-        });
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPnDxgZy0PPb4Se9BLcpFoAtyVfrLe61U&callback=initMap">
+  function initMap()
+  {
+    var uluru  = {lat: -25.363, lng: 131.044};
+    var map    = new google.maps.Map(document.getElementById('map'), {
+      zoom  : 4,
+      center: uluru
+    });
+    var marker = new google.maps.Marker({
+      position: uluru,
+      map     : map
+    });
+  }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPnDxgZy0PPb4Se9BLcpFoAtyVfrLe61U&callback=initMap">
 
-    </script>
+</script>
+<script>
 
+  $(".remover_prova").click(function (e) {
+
+    var prova = $(this).attr('value'); // $(this) refers to button that was clicked
+    var $this = $(this);
+    e.preventDefault();
+    $.ajax({
+      type: 'post',
+      data: {remover_prova: prova},
+      success: function(response){
+        console.log(response);
+        console.log($(this))
+        $this.closest("tr").remove();
+   }
+    });
+  });
+
+  $(".inscrever_prova").click(function (e) {
+    var prova = $(this).attr('value'); // $(this) refers to button that was clicked
+    var $this = $(this);
+    var row = $(this).closest('tr').clone();
+    var table = $("#inscrito");
+    e.preventDefault();
+    $.ajax({
+      type: 'post',
+      data: {prova: prova},
+      success: function(data){
+        if(!data.success){
+          alert("Já se encontra inscrito numa prova do mesmo evento!");
+          // console.log(data.success);
+        } // Just for demonstration purposes
+        else{
+          $this.closest('tr').remove();
+          var inscrito_table = $("#inscrito tbody");
+          console.log(inscrito_table);
+          if(table.hasClass('hide')){
+            table.removeClass('hide');
+            $('#inscrito tr').eq(1).remove();
+          }
+          inscrito_table.append(row);
+          $("#zero_inscritos").remove();
+          // $this.removeClass('btn-default inscrever_prova');
+          // $this.addClass('btn-success disable');
+          $this.text("Remover inscricao");
+        }
+   }
+    });
+  });
+</script>
+
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 </body>
 </html>
